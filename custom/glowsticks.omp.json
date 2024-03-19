@@ -1,0 +1,139 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 2,
+  "final_space": true,
+  "console_title_template": "\uf120 {{ .Shell }} in {{ if ne .Folder \"~\"}}\uf07b {{ .Folder }}{{else}}\uf015{{end}}",
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "session",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b6",
+          "invert_powerline": true,
+          "foreground": "p:white",
+          "background": "p:black",
+          "template": "{{ lower .UserName }}@{{ lower .HostName }} "
+        },
+        {
+          "type": "path",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "foreground": "p:white",
+          "background": "p:orange",
+          "template": " \uf07b {{ .Path }} ",
+          "properties": {
+            "home_icon": "\uf015",
+            "style": "folder"
+          }
+        },
+        {
+          "type": "command",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "foreground": "p:white",
+          "background": "p:green",
+          "template": " {{ .Output }} ",
+          "properties": {
+            "script": "BRANCH=$(git branch --show-current 2>/dev/null)\n[[ -z $BRANCH ]] && exit\nstatus=$(git status --porcelain | awk '{print $1}')\n[[ $status == *\"R\"* ]] && bits+='>'\n[[ $status == *\"A\"* ]] && bits+='+'\n[[ $status == *\"??\"* ]] && bits+='?'\n[[ $status == *\"D\"* ]] && bits+='x'\n[[ $status == *\"M\"* ]] && bits+='!'\n[[ \"$(git rev-list --count \"@{u}..\")\" -gt 0 ]] && bits+='*'\n[[ -n $bits ]] && STAT=\" \ue728 $bits\"\necho -n \"\ue725 $BRANCH$STAT\"\n",
+            "shell": "bash"
+          }
+        },
+        {
+          "type": "executiontime",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "foreground": "p:white",
+          "background": "p:darkred",
+          "template": " \ufa1e{{ .FormattedMs }} ",
+          "properties": {
+            "always_enabled": true,
+            "style": "round"
+          }
+        },
+        {
+          "type": "status",
+          "style": "diamond",
+          "powerline_symbol": "\ue0b0",
+          "foreground": "p:white",
+          "background": "p:blue",
+          "background_templates": [
+            "{{ if gt .Code 0 }}p:red{{ end }}"
+          ],
+          "trailing_diamond": "\ue0b4",
+          "template": " {{ if gt .Code 0 }}\uf00d {{ reason .Code }}{{ else }}\uf00c{{ end }} ",
+          "properties": {
+            "always_enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "type": "rprompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "shell",
+          "style": "plain",
+          "foreground": "p:white",
+          "background": "p:black",
+          "template": "<p:black,transparent>\ue0b6</>\uf120 {{ .Name }}<transparent,p:black>\ue0b2</>"
+        },
+        {
+          "type": "battery",
+          "style": "diamond",
+          "foreground": "p:white",
+          "background_templates": [
+            "{{if eq \"Charging\" .State.String }}p:green{{end}}",
+            "{{if eq \"Discharging\" .State.String}}p:orange{{end}}"
+          ],
+          "leading_diamond": "\ue0b2",
+          "template": " {{.Templates }}{{ .Percentage}}\uf8ef <transparent>\ue0b2</>",
+          "templates": [
+            "{{if eq \"Discharging\" .State.String}}{{if lt .Percentage 11}}\uf579{{else if lt .Percentage 21}}\uf57a{{else if lt .Percentage 31}}\uf57b{{else if lt .Percentage 41}}\uf57c{{else if lt .Percentage 51}}\uf57d{{else if lt .Percentage 61}}\uf57d{{else if lt .Percentage 71}}\uf57f{{else if lt .Percentage 81}}\uf580{{else if lt .Percentage 91}}\uf581{{else}}\uf578{{end}}{{end}}",
+            "{{if eq \"Charging\" .State.String}}{{ if lt .Percentage 21}}\uf585{{else if lt .Percentage 31}}\uf586{{else if lt .Percentage 41}}\uf587{{else if lt .Percentage 61}}\uf588{{else if lt .Percentage 81}}\uf589{{else if lt .Percentage 91}}\uf58a{{else}}\uf583{{end}}{{end}}"
+          ],
+          "templates_logic": "first_match",
+          "properties": {
+            "charged_icon": "\uf583",
+            "charging_icon": "\uf583",
+            "discharging_icon": "\uf578 "
+          }
+        },
+        {
+          "type": "command",
+          "style": "diamond",
+          "foreground": "p:white",
+          "background": "p:blue",
+          "leading_diamond": "\ue0b2",
+          "trailing_diamond": "\ue0b4",
+          "template": "{{ .Output }}",
+          "properties": {
+            "script": "now=\"$(date +'%I:%M%P')\"\nif [[ -f /tmp/weather.w ]]; then\n  update=\"$(cat /tmp/last_update.w)\"\n  if [[ -f /tmp/w_lock.w || $(date +'%s') -le $((update + 600)) ]]; then\n    echo -n \"$now\"\n    cat /tmp/weather.w\n    exit 0\n  fi\nelif [[ -f /tmp/w_lock.w ]]; then\n  echo \"$now\"\n  exit 0\nfi\ntouch /tmp/w_lock.w\nif ! res=$(curl -s wttr.in -Gsm2 --data-urlencode \"format=j1\"); then\n  echo \"$now\"\n  date +'%s' >/tmp/last_update.w\n  echo \ufaa9 >/tmp/weather.w\n  rm /tmp/w_lock.w\n  exit 0\nfi\nres=$(jq .current_condition[] -c <<<\"$res\")\ntemp=$(jq -r .temp_C <<<\"$res\")\nfeels_like=$(jq -r .FeelsLikeC <<<\"$res\")\n[[ $(bc -l <<<\"$feels_like!=$temp\") -eq 1 ]] && feels_string=\" feels $feels_like°C\"\nWWC_MAP='{\"113\":\"Sunny\",\"116\":\"PartlyCloudy\",\"119\":\"Cloudy\",\"122\":\"VeryCloudy\",\"143\":\"Fog\",\"176\":\"LightShowers\",\"179\":\"LightSleetShowers\",\"182\":\"LightSleet\",\"185\":\"LightSleet\",\"200\":\"ThunderyShowers\",\"227\":\"LightSnow\",\"230\":\"HeavySnow\",\"248\":\"Fog\",\"260\":\"Fog\",\"263\":\"LightShowers\",\"266\":\"LightRain\",\"281\":\"LightSleet\",\"284\":\"LightSleet\",\"293\":\"LightRain\",\"296\":\"LightRain\",\"299\":\"HeavyShowers\",\"302\":\"HeavyRain\",\"305\":\"HeavyShowers\",\"308\":\"HeavyRain\",\"311\":\"LightSleet\",\"314\":\"LightSleet\",\"317\":\"LightSleet\",\"320\":\"LightSnow\",\"323\":\"LightSnowShowers\",\"326\":\"LightSnowShowers\",\"329\":\"HeavySnow\",\"332\":\"HeavySnow\",\"335\":\"HeavySnowShowers\",\"338\":\"HeavySnow\",\"350\":\"LightSleet\",\"353\":\"LightShowers\",\"356\":\"HeavyShowers\",\"359\":\"HeavyRain\",\"362\":\"LightSleetShowers\",\"365\":\"LightSleetShowers\",\"368\":\"LightSnowShowers\",\"371\":\"HeavySnowShowers\",\"374\":\"LightSleetShowers\",\"377\":\"LightSleet\",\"386\":\"ThunderyShowers\",\"389\":\"ThunderyHeavyRain\",\"392\":\"ThunderySnowShowers\",\"395\":\"HeavySnowShowers\"}';NF_DAY_MAP='{\"Unknown\":\"\ufb8a\",\"Cloudy\":\"\ue33d\",\"Fog\":\"\ue313\",\"HeavyRain\":\"\ue318\",\"HeavyShowers\":\"\ue317\",\"HeavySnow\":\"\ue31a\",\"HeavySnowShowers\":\"\ue35e\",\"LightRain\":\"\ue308\",\"LightShowers\":\"\ue309\",\"LightSleet\":\"\ue3aa\",\"LightSleetShowers\":\"\ue306\",\"LightSnow\":\"\ue30a\",\"LightSnowShowers\":\"\ue35f\",\"PartlyCloudy\":\"\ue302\",\"Sunny\":\"\ue30d\",\"ThunderyHeavyRain\":\"\ue31d\",\"ThunderyShowers\":\"\ue31c\",\"ThunderySnowShowers\":\"\ue365\",\"VeryCloudy\":\"\ue312\"}';NF_NIGHT_MAP='{\"Unknown\":\"\ufb8a\",\"Cloudy\":\"\ue33d\",\"Fog\":\"\ue313\",\"HeavyRain\":\"\ue318\",\"HeavyShowers\":\"\ue317\",\"HeavySnow\":\"\ue31a\",\"HeavySnowShowers\":\"\ue35e\",\"LightRain\":\"\ue333\",\"LightShowers\":\"\ue334\",\"LightSleet\":\"\ue3ab\",\"LightSleetShowers\":\"\ue3ab\",\"LightSnow\":\"\ue335\",\"LightSnowShowers\":\"\ue360\",\"PartlyCloudy\":\"\ue32e\",\"Sunny\":\"\ue32b\",\"ThunderyHeavyRain\":\"\ue31d\",\"ThunderyShowers\":\"\ue31c\",\"ThunderySnowShowers\":\"\ue366\",\"VeryCloudy\":\"\ue312\"}'\ncur_h=\"$(date +'%H')\" ;wwc=\"$(jq '.weatherCode' <<<\"$res\")\"\nif [[ $cur_h -gt 18 || $cur_h -lt 6 ]]; then icon=$(jq -r \".$(echo \"$WWC_MAP\" | jq -r \".$wwc\")\" <<<\"$NF_DAY_MAP\")\nelse icon=$(jq -r \".$(echo \"$WWC_MAP\" | jq -r \".$wwc\")\" <<<\"$NF_NIGHT_MAP\"); fi\nweather=\"$icon  $temp°C$feels_string\"\necho \"$now $weather\"\ndate +'%s' >/tmp/last_update.w\necho \"$weather\" >/tmp/weather.w\nrm /tmp/w_lock.w\n"
+          }
+        }
+      ]
+    }
+  ],
+  "transient_prompt": {
+    "foreground": "p:white",
+    "background": "transparent",
+    "template": "\uf061 "
+  },
+  "secondary_prompt": {
+    "foreground": "p:white",
+    "background": "transparent",
+    "template": "\uf061 "
+  },
+  "palette": {
+    "black": "#33395b",
+    "blue": "#359ddd",
+    "darkred": "#7c0a16",
+    "green": "#277b48",
+    "orange": "#ff972e",
+    "red": "#de3142",
+    "white": "#efeef4"
+  }
+}
