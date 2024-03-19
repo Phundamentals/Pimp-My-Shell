@@ -23,7 +23,7 @@
           "powerline_symbol": "\ue0b0",
           "foreground": "p:white",
           "background": "p:orange",
-          "template": " \uf07b {{ .Path }} ",
+          "template": " \uf07c {{ .Path }} ",
           "properties": {
             "home_icon": "\uf015",
             "style": "folder"
