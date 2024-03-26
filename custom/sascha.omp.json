@@ -93,16 +93,6 @@
           }
         },
         {
-          "type": "go",
-          "style": "plain",
-          "foreground": "p:blue",
-          "background": "transparent",
-          "template": "\ue626 ",
-          "properties": {
-            "fetch_version": false
-          }
-        },
-        {
           "type": "python",
           "style": "plain",
           "foreground": "p:yellow",
