@@ -93,18 +93,6 @@
           }
         },
         {
-          "type": "python",
-          "style": "plain",
-          "foreground": "p:yellow",
-          "background": "transparent",
-          "template": "\ue235 ",
-          "properties": {
-            "display_mode": "files",
-            "fetch_version": false,
-            "fetch_virtual_env": false
-          }
-        },
-        {
           "type": "shell",
           "style": "plain",
           "foreground": "p:white",
