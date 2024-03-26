@@ -97,38 +97,6 @@
       ]
     }
   ],
-  "tooltips": [
-    {
-      "type": "aws",
-      "tips": [
-        "aws"
-      ],
-      "style": "diamond",
-      "foreground": "p:white",
-      "background": "p:orange",
-      "leading_diamond": "\ue0b0",
-      "trailing_diamond": "\ue0b4",
-      "template": " \ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} ",
-      "properties": {
-        "display_default": true
-      }
-    },
-    {
-      "type": "az",
-      "tips": [
-        "az"
-      ],
-      "style": "diamond",
-      "foreground": "p:white",
-      "background": "p:blue",
-      "leading_diamond": "\ue0b0",
-      "trailing_diamond": "\ue0b4",
-      "template": " \uebd8 {{ .Name }} ",
-      "properties": {
-        "display_default": true
-      }
-    }
-  ],
   "transient_prompt": {
     "foreground": "p:black",
     "background": "transparent",
