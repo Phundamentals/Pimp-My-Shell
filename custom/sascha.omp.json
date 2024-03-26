@@ -81,18 +81,6 @@
       "type": "rprompt",
       "segments": [
         {
-          "type": "node",
-          "style": "plain",
-          "foreground": "p:green",
-          "background": "transparent",
-          "template": "\ue718 ",
-          "properties": {
-            "display_mode": "files",
-            "fetch_package_manager": false,
-            "home_enabled": false
-          }
-        },
-        {
           "type": "shell",
           "style": "plain",
           "foreground": "p:white",
