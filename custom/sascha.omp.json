@@ -82,17 +82,21 @@
       "segments": [
         {
           "type": "shell",
-          "style": "plain",
+          "style": "diamond",
+          "leading_diamond": "\ue0b6",
+          "trailing_diamond": "\ue0b4",
           "foreground": "p:white",
-          "background": "transparent",
-          "template": "in <p:blue><b>{{ .Name }}</b></> "
+          "background": "p:blue",
+          "template": "<b>{{ .Name }}</b>"
         },
         {
           "type": "time",
-          "style": "plain",
+          "style": "diamond",
+          "leading_diamond": " \ue0b6",
+          "trailing_diamond": "\ue0b4",
           "foreground": "p:white",
-          "background": "transparent",
-          "template": "at <p:blue><b>{{ .CurrentDate | date \"15:04:05\" }}</b></>"
+          "background": "p:orange",
+          "template": "<b>{{ .CurrentDate | date \"15:04:05\" }}</b>"
         }
       ]
     }
