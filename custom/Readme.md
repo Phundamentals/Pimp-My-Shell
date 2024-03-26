@@ -1,5 +1,14 @@
 ﻿# Oh-My-Posh
 
+### Todo
+
+- [ ] Json vs Yaml vs Toml
+- [ ] Can themes be [extended](https://ohmyposh.dev/docs/configuration/secondary-prompt#configuration)?
+  _I don't think so, probably a wording issue_.
+- [ ] Color templates.
+- [ ] Sprig.
+- [ ] Derive from built-in defaults to stay up-to-date.
+
 ### Concepts
 
 - **Block**: a container for segments that define position, alignment, overflow and more.  
